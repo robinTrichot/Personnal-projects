@@ -5,7 +5,6 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import myCompany.dao.*;
 import myCompany.utils.SessionUtils;
-
 import java.io.IOException;
 
 @WebServlet("/ListEpreuve")
@@ -38,20 +37,13 @@ public class ListEpreuve extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String entreUser = (request.getParameter("txtSearch"));
         HttpSession session = request.getSession(true);
-        //  String deroulant = (request.getParameter("deroulant"));
-
         String firstT = "Pour l'année : ";
         String complementation = firstT + entreUser;
         request.setAttribute("anneeEntreee", complementation);
 
         if (session.getAttribute("ConnectedUser") == null) {
-            //   boolean isExpired = true;
-            //   session.setAttribute("isExpired", isExpired);
             response.sendRedirect(request.getContextPath() + "/login");
-
         }
-
-        // la recherche
         if (request.getParameter("action1").equals("Rechercher")) {
             try {
                 request.setAttribute("list2", epreuveDao.rechercher(entreUser));
@@ -60,7 +52,6 @@ public class ListEpreuve extends HttpServlet {
                 throw new RuntimeException(e);
             }
             this.getServletContext().getRequestDispatcher("/WEB-INF/listEpreuve.jsp").forward(request, response);
-            // la deconnexion
         } else if (request.getParameter("action1").equals("Deconnexion")) {
 
             session.setAttribute("ConnectedUser", null);

@@ -16,18 +16,15 @@ public class DaoFactory {
         this.password = password;
     }
 
-    // Chargement du pilote MySQL, récupération d'un objet de type Class
     public static DaoFactory getInstance() {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException e) {
         }
-        //Instance Dao Factory
         DaoFactory instance = new DaoFactory("jdbc:mariadb://localhost:3306/tennis", "root", "");
         return instance;
     }
 
-    //Créer la connection
     public Connection getConnection() throws SQLException {
         Connection connexion = DriverManager.getConnection(url, username, password);
         return connexion;

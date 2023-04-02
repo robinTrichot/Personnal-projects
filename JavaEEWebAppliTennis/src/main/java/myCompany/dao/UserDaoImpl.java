@@ -37,7 +37,6 @@ public class UserDaoImpl {
                 System.out.println("Mauvais login ou password ! ");
                 return null;
             }
-            // si on met pas d'exception clssique ici il demande un return à al toute fin ça n'aurait pas de sens;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

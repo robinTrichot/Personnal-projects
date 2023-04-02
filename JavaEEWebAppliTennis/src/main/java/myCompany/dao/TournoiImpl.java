@@ -1,10 +1,7 @@
 package myCompany.dao;
 
-import myCompany.beans.BeanException;
-import myCompany.beans.Joueur;
 import myCompany.beans.Tournoi;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

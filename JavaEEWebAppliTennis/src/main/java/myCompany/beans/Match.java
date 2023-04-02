@@ -5,19 +5,23 @@ public class Match {
     private int id_epreuve;
     private String id_vainqueur;
     private String id_finaliste;
+
     public Match(int id, int id_epreuve, String id_vainqueur, String id_finaliste) {
         this.id = id;
         this.id_epreuve = id_epreuve;
         this.id_vainqueur = id_vainqueur;
         this.id_finaliste = id_finaliste;
     }
+
     public Match(String id_vainqueur, String id_finaliste) {
         this.id_vainqueur = id_vainqueur;
         this.id_finaliste = id_finaliste;
     }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }

@@ -36,7 +36,6 @@ public class SupprimerTournoi extends HttpServlet {
             return;
         }
 
-
         if (!result) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;

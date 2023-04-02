@@ -3,20 +3,16 @@ package myCompany.servlets;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-
-import myCompany.beans.BeanException;
-import myCompany.beans.Joueur;
 import myCompany.dao.DaoException;
 import myCompany.dao.DaoFactory;
 import myCompany.dao.JoueurDao;
 import myCompany.dao.JoueurDaoImpl;
 import myCompany.utils.SessionUtils;
-
-
 import java.io.IOException;
 
-@WebServlet("/ModifierJoueur")
-public class ModifierJoueur extends HttpServlet {
+@WebServlet("/SupprimerJoueur")
+public class SupprimerJoueur extends HttpServlet {
+
     private JoueurDao joueurDao;
     private Long id;
 
@@ -31,7 +27,6 @@ public class ModifierJoueur extends HttpServlet {
         Boolean result = (Boolean) session.getAttribute("isAdmin");
         session.setAttribute("isAdmin", result);
 
-        System.out.println(result);
         if (!SessionUtils.isUserLoggedIn(request)) {
             response.sendRedirect("/tennis/login");
             return;
@@ -39,37 +34,19 @@ public class ModifierJoueur extends HttpServlet {
 
         if (!result) {
             response.sendRedirect("/tennis/login");
+            return;
         } else {
-
-            Joueur j1 = null;
+            id = Long.valueOf(request.getParameter("id"));
             try {
-                j1 = joueurDao.lecture(Long.valueOf(request.getParameter("id")));
+                joueurDao.delete(id);
             } catch (DaoException e) {
                 throw new RuntimeException(e);
             }
-            request.setAttribute("j1", j1);
-            id = Long.valueOf(request.getParameter("id"));
-            this.getServletContext().getRequestDispatcher("/WEB-INF/modifierJoueur.jsp").forward(request, response);
         }
-
-
+        response.sendRedirect(request.getContextPath() + "/ListJoueur");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Joueur j1 = new Joueur();
-
-
-        try {
-            j1.setNom(request.getParameter("txtNom"));
-            j1.setPrenom(request.getParameter("txtPrenom"));
-            j1.setSexe(request.getParameter("opSexe"));
-            j1.setId(id);
-            joueurDao.modifier(j1);
-            response.sendRedirect(request.getContextPath() + "/ListJoueur");
-        } catch (BeanException | DaoException e) {
-            request.setAttribute("erreur", e.getMessage());
-            this.getServletContext().getRequestDispatcher("/WEB-INF/modifierJoueur.jsp").forward(request, response);
-        }
     }
 }

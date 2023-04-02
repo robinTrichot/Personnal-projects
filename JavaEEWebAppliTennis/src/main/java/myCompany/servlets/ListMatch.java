@@ -7,7 +7,6 @@ import myCompany.dao.*;
 import myCompany.utils.SessionUtils;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 
 @WebServlet("/ListMatch")
@@ -47,8 +46,6 @@ public class ListMatch extends HttpServlet {
         HttpSession session = request.getSession(true);
 
         if (session.getAttribute("ConnectedUser") == null) {
-            //   boolean isExpired = true;
-            //   session.setAttribute("isExpired", isExpired);
             response.sendRedirect(request.getContextPath() + "/login");
 
         }
@@ -73,7 +70,6 @@ public class ListMatch extends HttpServlet {
                 throw new RuntimeException(e);
             }
             this.getServletContext().getRequestDispatcher("/WEB-INF/listMatch.jsp").forward(request, response);
-            // la deconnexion
         } else if (request.getParameter("action1").equals("Deconnexion")) {
 
             session.setAttribute("ConnectedUser", null);

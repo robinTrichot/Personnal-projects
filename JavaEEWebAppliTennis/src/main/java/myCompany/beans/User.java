@@ -44,6 +44,4 @@ public class User {
         this.password = password;
         this.profil = profil;
     }
-
-    // u nadmin peut ajotuer ou mifier mais u nutilisateur simple ne peut pas lui à faire;
 }

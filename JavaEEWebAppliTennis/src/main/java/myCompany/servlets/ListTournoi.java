@@ -3,37 +3,28 @@ package myCompany.servlets;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-
-import myCompany.beans.User;
-import myCompany.dao.*;
+import myCompany.dao.DaoException;
+import myCompany.dao.DaoFactory;
+import myCompany.dao.TournoiDao;
+import myCompany.dao.TournoiImpl;
 import myCompany.utils.SessionUtils;
 
-
 import java.io.IOException;
-import java.sql.SQLException;
 
+@WebServlet("/ListTournoi")
+public class ListTournoi extends HttpServlet {
 
-@WebServlet("/ListJoueur")
-public class ListJoueur extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private TournoiDao tournoiDao;
 
-    // ci dessous j'appelle l'interface pour le concept DAO
-    private JoueurDao joueurDao;
-
-
-    public ListJoueur() {
-        super();
-    }
 
     @Override
     public void init() throws ServletException {
         DaoFactory dao2 = DaoFactory.getInstance();
-        joueurDao = new JoueurDaoImpl(dao2);
-
+        tournoiDao = new TournoiImpl(dao2);
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         HttpSession session = request.getSession();
         Boolean result = (Boolean) session.getAttribute("isAdmin");
         session.setAttribute("isAdmin", result);
@@ -44,41 +35,36 @@ public class ListJoueur extends HttpServlet {
         }
 
         try {
-            request.setAttribute("list2", joueurDao.lister());
-        } catch (SQLException | DaoException e) {
+            request.setAttribute("list2", tournoiDao.lister());
+        } catch (DaoException e) {
             throw new RuntimeException(e);
         }
-        this.getServletContext().getRequestDispatcher("/WEB-INF/testlistjoueur.jsp").forward(request, response);
+        this.getServletContext().getRequestDispatcher("/WEB-INF/listTournoi.jsp").forward(request, response);
     }
 
-
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String entreUser = request.getParameter("txtSearch");
         HttpSession session = request.getSession(true);
+        String entreUser = request.getParameter("txtSearch");
 
-        if (session.getAttribute("ConnectedUser") == null) {
-            //   boolean isExpired = true;
-            //   session.setAttribute("isExpired", isExpired);
-            response.sendRedirect(request.getContextPath() + "/login");
-
+        try {
+            request.setAttribute("list2", tournoiDao.rechercher(entreUser));
+        } catch (DaoException e) {
+            throw new RuntimeException(e);
         }
 
-        // la recherche
         if (request.getParameter("action1").equals("Rechercher")) {
             try {
-                request.setAttribute("list2", joueurDao.rechercher(entreUser));
+                request.setAttribute("list2", tournoiDao.rechercher(entreUser));
             } catch (DaoException e) {
                 throw new RuntimeException(e);
             }
-            this.getServletContext().getRequestDispatcher("/WEB-INF/testlistjoueur.jsp").forward(request, response);
-            // la deconnexion
+            this.getServletContext().getRequestDispatcher("/WEB-INF/listTournoi.jsp").forward(request, response);
         } else if (request.getParameter("action1").equals("Deconnexion")) {
 
             session.setAttribute("ConnectedUser", null);
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-
-
     }
 }
